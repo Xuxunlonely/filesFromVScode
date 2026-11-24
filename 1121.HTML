@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>同舟家教 · 用心陪伴每一步成长</title>
+  <style>
+    :root {
+      --leaf:#9ed96b;        /* 阳光下的嫩绿 */
+      --leaf-soft:#e9f8d6;
+      --leaf-deep:#5b9a33;
+      --sun:#ffd66b;
+      --ink:#2c3a28;
+      --muted:#66735f;
+      --bg:#fbfef6;
+      --white:#ffffff;
+      --line:#dfeecb;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink); background:var(--bg); line-height:1.7; }
+    a { color:inherit; text-decoration:none; }
+    header { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:16px 6%; background:rgba(255,255,255,.95); border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:bold; font-size:20px; color:var(--leaf-deep); }
+    .brand-mark { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--sun),var(--leaf)); }
+    nav { display:flex; gap:26px; font-size:15px; }
+    nav a:hover { color:var(--leaf-deep); }
+    .btn { display:inline-block; border:0; background:var(--leaf); color:#1f3514; padding:12px 26px; border-radius:999px; font-size:15px; font-weight:bold; cursor:pointer; box-shadow:0 6px 16px #9ed96b66; }
+    .btn:hover { background:#8ccd58; }
+    .btn-ghost { background:transparent; color:var(--leaf-deep); border:2px solid var(--leaf); box-shadow:none; }
+    .hero { position:relative; display:grid; grid-template-columns:1.1fr .9fr; align-items:center; gap:40px; padding:90px 8%; background:linear-gradient(160deg,#f6fde9 0%,#e3f6c8 100%); overflow:hidden; }
+    .sun { position:absolute; width:260px; height:260px; right:-60px; top:-70px; border-radius:50%; background:radial-gradient(circle,var(--sun) 0%,#ffe9a8 60%,transparent 70%); opacity:.85; }
+    .hero-copy { position:relative; }
+    .tag { display:inline-block; padding:6px 14px; border-radius:999px; background:var(--white); color:var(--leaf-deep); font-size:13px; font-weight:bold; margin-bottom:18px; }
+    h1 { font-size:48px; line-height:1.25; margin:0 0 18px; color:#2f4a22; }
+    .hero-copy p { font-size:17px; color:var(--muted); margin:0 0 30px; }
+    .hero-actions { display:flex; gap:14px; flex-wrap:wrap; }
+    .hero-card { position:relative; background:var(--white); border-radius:24px; padding:34px; box-shadow:0 20px 40px #9ed96b33; }
+    .hero-card h3 { margin:0 0 14px; color:var(--leaf-deep); }
+    .hero-card ul { margin:0; padding-left:20px; color:var(--muted); }
+    .hero-card li { margin-bottom:8px; }
+    section { max-width:1180px; margin:0 auto; padding:80px 6%; }
+    .section-title { text-align:center; margin-bottom:44px; }
+    .section-title small { color:var(--leaf-deep); font-weight:bold; letter-spacing:.14em; }
+    h2 { font-size:34px; margin:8px 0 0; color:#2f4a22; }
+    .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+    .card { background:var(--white); border-radius:20px; padding:28px 24px; border:1px solid var(--line); transition:.3s; }
+    .card:hover { transform:translateY(-6px); box-shadow:0 16px 30px #9ed96b40; }
+    .icon { width:52px; height:52px; border-radius:16px; background:var(--leaf-soft); display:grid; place-items:center; margin-bottom:16px; font-size:24px; }
+    .card h3 { margin:0 0 8px; font-size:19px; }
+    .card p { margin:0; color:var(--muted); font-size:14px; }
+    .courses { background:var(--leaf-soft); max-width:none; }
+    .courses-inner { max-width:1180px; margin:0 auto; }
+    .level { color:var(--leaf-deep); font-size:13px; font-weight:bold; }
+    .price { margin-top:14px; font-size:14px; color:var(--ink); }
+    .price b { font-size:20px; color:var(--leaf-deep); }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; counter-reset:step; }
+    .step { position:relative; background:var(--white); border-radius:20px; padding:32px 26px 28px; border-top:6px solid var(--leaf); }
+    .step::before { counter-increment:step; content:"0" counter(step); display:block; font-size:30px; font-weight:bold; color:var(--leaf); margin-bottom:8px; }
+    .step h3 { margin:0 0 8px; }
+    .step p { margin:0; color:var(--muted); font-size:14px; }
+    .cta { margin:0 6% 80px; border-radius:28px; padding:60px 6%; text-align:center; background:linear-gradient(120deg,var(--leaf) 0%,#c6ec8f 100%); color:#1f3514; }
+    .cta h2 { color:#1f3514; }
+    .cta p { margin:12px 0 28px; font-size:16px; }
+    .cta .btn { background:var(--white); color:var(--leaf-deep); box-shadow:none; }
+    footer { background:#2f4a22; color:#e7f4d6; padding:40px 6%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; font-size:14px; }
+    footer .brand { color:#ffffff; }
+    footer .brand-mark { background:linear-gradient(135deg,var(--sun),var(--leaf)); }
+    @media(max-width:900px){
+      nav { display:none; }
+      .hero { grid-template-columns:1fr; padding:60px 6%; }
+      h1 { font-size:36px; }
+      .grid { grid-template-columns:repeat(2,1fr); }
+      .steps { grid-template-columns:1fr; }
+    }
+    @media(max-width:560px){ .grid { grid-template-columns:1fr; } h2 { font-size:28px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="brand-mark"></span>同舟家教</div>
+    <nav><a href="#">首页</a><a href="#courses">学科辅导</a><a href="#advantages">教学优势</a><a href="#process">上课流程</a><a href="#contact">联系我们</a></nav>
+    <a class="btn" href="#contact">预约试听</a>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="sun"></div>
+      <div class="hero-copy">
+        <span class="tag">一对一 · 因材施教</span>
+        <h1>同舟共济，<br>陪孩子稳稳前行</h1>
+        <p>我们以耐心和专业为基础，为每个孩子量身制定学习计划。从课业辅导到学习习惯培养，让孩子在阳光下自信成长。</p>
+        <div class="hero-actions">
+          <a class="btn" href="#contact">免费预约试听</a>
+          <a class="btn btn-ghost" href="#courses">查看课程</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h3>试听课包含</h3>
+        <ul>
+          <li>免费学情测评，了解孩子现有水平</li>
+          <li>老师一对一讲解，体验课堂节奏</li>
+          <li>专属学习建议，提供清晰的提升方向</li>
+        </ul>
+      </div>
+    </div>
+
+    <section id="advantages">
+      <div class="section-title"><small>WHY TONGZHOU</small><h2>我们的教学优势</h2></div>
+      <div class="grid">
+        <div class="card"><div class="icon">🎯</div><h3>因材施教</h3><p>先测评再规划，针对薄弱环节重点突破，不做无效重复。</p></div>
+        <div class="card"><div class="icon">👩‍🏫</div><h3>认证师资</h3><p>教师均经过严格筛选，具备多年教学经验和良好的沟通能力。</p></div>
+        <div class="card"><div class="icon">📈</div><h3>进度可见</h3><p>每月提供学习报告，家长随时掌握孩子的进步与变化。</p></div>
+        <div class="card"><div class="icon">🌱</div><h3>习惯培养</h3><p>重视专注力、自主学习和时间管理，让成绩提升更持久。</p></div>
+      </div>
+    </section>
+
+    <section id="courses" class="courses">
+      <div class="courses-inner">
+        <div class="section-title"><small>COURSES</small><h2>学科辅导课程</h2></div>
+        <div class="grid">
+          <div class="card"><div class="level">小学 1-6 年级</div><h3 style="margin-top:6px">数学思维</h3><p>夯实计算基础，培养逻辑思维与解题能力。</p><div class="price">课时参考 <b>¥180</b> / 次</div></div>
+          <div class="card"><div class="level">初中 7-9 年级</div><h3 style="margin-top:6px">英语提升</h3><p>听说读写全面训练，衔接中考题型。</p><div class="price">课时参考 <b>¥200</b> / 次</div></div>
+          <div class="card"><div class="level">高中 10-12 年级</div><h3 style="margin-top:6px">物理与数学</h3><p>专题讲解难点，搭建完整的知识框架。</p><div class="price">课时参考 <b>¥240</b> / 次</div></div>
+          <div class="card"><div class="level">小学至初中</div><h3 style="margin-top:6px">语文阅读写作</h3><p>提升阅读理解和表达能力，培养良好的写作习惯。</p><div class="price">课时参考 <b>¥180</b> / 次</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="section-title"><small>PROCESS</small><h2>上课流程</h2></div>
+      <div class="steps">
+        <div class="step"><h3>预约试听</h3><p>填写孩子年级和需求，我们会安排顾问与您电话沟通。</p></div>
+        <div class="step"><h3>学情测评</h3><p>老师了解孩子基础，给出清晰的学习诊断与建议。</p></div>
+        <div class="step"><h3>定制计划</h3><p>根据测评结果制定课程安排，之后按计划稳步推进。</p></div>
+      </div>
+    </section>
+
+    <div id="contact" class="cta">
+      <h2>让孩子从这一步开始变好</h2>
+      <p>免费试听名额有限，欢迎预约。</p>
+      <a class="btn" href="#">立即预约试听</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="brand"><span class="brand-mark"></span>同舟家教</div>
+    <div>咨询电话：请填写 · 上课地址：请填写</div>
+    <div>© 2026 同舟家教 · 用心陪伴每一步成长</div>
+  </footer>
+</body>
+</html>
