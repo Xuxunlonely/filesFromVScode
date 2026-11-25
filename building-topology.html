@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>两层楼建筑拓扑图</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .subtitle { color: #6b7280; font-size: 13px; margin-bottom: 16px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; font-size: 13px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,.15); }
+
+  .floor-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+  .floor-card h2 { font-size: 17px; margin: 0 0 12px; }
+  .floor-card h2 small { font-weight: normal; color: #6b7280; font-size: 12px; margin-left: 8px; }
+
+  .plan { display: grid; gap: 6px; grid-auto-rows: 84px; }
+  .plan-f1 { grid-template-columns: 1.7fr 1fr; grid-template-rows: repeat(5, 84px); }
+  .plan-f2 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 84px); }
+
+  .room {
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,.12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 13px;
+    padding: 4px;
+  }
+  .room .code { font-weight: bold; }
+  .room .desc { font-size: 11px; color: #4b5563; margin-top: 2px; }
+
+  .dc { grid-row: 1 / span 5; background: #dbeafe; border-color: #3b82f6; font-size: 14px; }
+  .dc .dc-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+  }
+  .dc .dc-inner div {
+    background: rgba(255,255,255,.75);
+    border: 1px dashed #3b82f6;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    text-align: center;
+  }
+  .dc .dc-title { position: absolute; }
+  .dc-wrap { position: relative; grid-row: 1 / span 5; background: #dbeafe; border: 2px solid #3b82f6; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; }
+  .dc-wrap .title { text-align: center; font-weight: bold; color: #1e40af; font-size: 15px; }
+  .dc-wrap .title small { display: block; font-weight: normal; font-size: 11px; color: #1e3a8a; }
+  .dc-wrap .dc-inner { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
+  .dc-wrap .dc-inner div {
+    background: rgba(255,255,255,.8); border: 1px dashed #3b82f6; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; text-align: center; font-size: 12px;
+  }
+
+  .office { background: #dcfce7; border-color: #22c55e; }
+  .meet   { background: #fef3c7; border-color: #f59e0b; }
+  .core   { background: #e5e7eb; border-color: #6b7280; }
+  .aux    { background: #f3f4f6; border-color: #9ca3af; }
+
+  .rooms-f1 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(5, 84px); gap: 6px; }
+
+  /* Topology */
+  .topo-card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.08); padding: 16px; }
+  .topo-card h2 { font-size: 17px; margin: 0 0 8px; }
+  .topo-card svg { width: 100%; height: auto; display: block; }
+  .link { stroke: #4b5563; stroke-width: 2; fill: none; }
+  .link.fiber { stroke: #2563eb; stroke-width: 3; }
+  .link.copper { stroke: #9ca3af; stroke-width: 2; stroke-dasharray: 5 4; }
+  .lbl { font-size: 11px; fill: #374151; }
+  .node rect { stroke-width: 1.5; rx: 8; }
+  .node text { font-size: 13px; text-anchor: middle; }
+  .node .sub { font-size: 11px; fill: #6b7280; }
+  .floor-band { fill: #f9fafb; stroke: #e5e7eb; }
+  .floor-band-label { font-size: 12px; fill: #6b7280; }
+</style>
+</head>
+<body>
+
+<h1>两层楼建筑拓扑图</h1>
+<div class="subtitle">共 2 层｜F1 机房 800㎡ + 办公室 5 间 + 会议室 3 间｜F2 办公室 15 间 + 会议室 2 间｜示意图，房间尺寸不按实际比例</div>
+
+<div class="legend">
+  <span><i class="swatch" style="background:#dbeafe"></i>机房</span>
+  <span><i class="swatch" style="background:#dcfce7"></i>办公室（20 间）</span>
+  <span><i class="swatch" style="background:#fef3c7"></i>会议室（5 间）</span>
+  <span><i class="swatch" style="background:#e5e7eb"></i>电梯 / 楼梯 / 弱电间</span>
+  <span><i class="swatch" style="background:#f3f4f6"></i>其他</span>
+</div>
+
+<!-- 一层平面 -->
+<div class="floor-card">
+  <h2>一层（F1）<small>机房 800㎡ / 办公室 5 间 / 会议室 3 间 / 电梯 + 楼梯</small></h2>
+  <div class="plan plan-f1">
+    <div class="dc-wrap">
+      <div class="title">机房 800㎡<small>核心网络 / 服务器 / 配电</small></div>
+      <div class="dc-inner">
+        <div>服务器区 A</div>
+        <div>服务器区 B</div>
+        <div>网络核心区<br>(核心交换机、防火墙)</div>
+        <div>UPS / 配电室</div>
+        <div>精密空调区</div>
+        <div>监控 / 运维台</div>
+      </div>
+    </div>
+    <div class="rooms-f1">
+      <div class="room core"><span class="code">电梯间</span><span class="desc">F1 ↔ F2</span></div>
+      <div class="room core"><span class="code">楼梯间</span><span class="desc">消防疏散</span></div>
+      <div class="room meet"><span class="code">会议室 M-101</span><span class="desc">12 人</span></div>
+      <div class="room office"><span class="code">办公室 O-101</span></div>
+      <div class="room meet"><span class="code">会议室 M-102</span><span class="desc">8 人</span></div>
+      <div class="room office"><span class="code">办公室 O-102</span></div>
+      <div class="room meet"><span class="code">会议室 M-103</span><span class="desc">6 人</span></div>
+      <div class="room office"><span class="code">办公室 O-103</span></div>
+      <div class="room office"><span class="code">办公室 O-104</span></div>
+      <div class="room office"><span class="code">办公室 O-105</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 二层平面 -->
+<div class="floor-card">
+  <h2>二层（F2）<small>办公室 15 间 / 会议室 2 间 / 电梯 + 楼梯 + 弱电间</small></h2>
+  <div class="plan plan-f2">
+    <div class="room core"><span class="code">电梯间</span><span class="desc">F1 ↔ F2</span></div>
+    <div class="room core"><span class="code">楼梯间</span><span class="desc">消防疏散</span></div>
+    <div class="room core"><span class="code">弱电间</span><span class="desc">F2 接入交换机</span></div>
+    <div class="room office"><span class="code">办公室 O-201</span></div>
+
+    <div class="room meet"><span class="code">会议室 M-201</span><span class="desc">10 人</span></div>
+    <div class="room office"><span class="code">办公室 O-202</span></div>
+    <div class="room office"><span class="code">办公室 O-203</span></div>
+    <div class="room office"><span class="code">办公室 O-204</span></div>
+
+    <div class="room office"><span class="code">办公室 O-205</span></div>
+    <div class="room office"><span class="code">办公室 O-206</span></div>
+    <div class="room office"><span class="code">办公室 O-207</span></div>
+    <div class="room office"><span class="code">办公室 O-208</span></div>
+
+    <div class="room office"><span class="code">办公室 O-209</span></div>
+    <div class="room office"><span class="code">办公室 O-210</span></div>
+    <div class="room office"><span class="code">办公室 O-211</span></div>
+    <div class="room office"><span class="code">办公室 O-212</span></div>
+
+    <div class="room meet"><span class="code">会议室 M-202</span><span class="desc">6 人</span></div>
+    <div class="room office"><span class="code">办公室 O-213</span></div>
+    <div class="room office"><span class="code">办公室 O-214</span></div>
+    <div class="room office"><span class="code">办公室 O-215</span></div>
+  </div>
+</div>
+
+<!-- 网络拓扑 -->
+<div class="topo-card">
+  <h2>网络拓扑</h2>
+  <svg viewBox="0 0 900 470" xmlns="http://www.w3.org/2000/svg">
+    <!-- 楼层背景 -->
+    <rect class="floor-band" x="20" y="195" width="860" height="265" rx="8"/>
+    <text class="floor-band-label" x="30" y="214">机房 / 核心层（F1 机房）</text>
+    <text class="floor-band-label" x="30" y="214" dx="0"></text>
+
+    <!-- 连线 -->
+    <!-- 运营商 → 防火墙 -->
+    <line class="link fiber" x1="450" y1="62" x2="450" y2="92"/>
+    <!-- 防火墙 → 核心 -->
+    <line class="link fiber" x1="450" y1="140" x2="450" y2="176"/>
+    <!-- 核心 → F1 汇聚 -->
+    <path class="link fiber" d="M 420 210 L 260 210 L 260 258"/>
+    <!-- 核心 → F2 汇聚（经电梯井竖井） -->
+    <path class="link fiber" d="M 480 210 L 640 210 L 640 258"/>
+    <!-- 核心 → 服务器区 -->
+    <line class="link fiber" x1="450" y1="210" x2="450" y2="300"/>
+    <!-- F1 汇聚 → F1 接入 -->
+    <line class="link" x1="260" y1="300" x2="260" y2="348"/>
+    <!-- F2 汇聚 → F2 接入 -->
+    <line class="link" x1="640" y1="300" x2="640" y2="348"/>
+    <!-- F1 接入 → 终端 -->
+    <line class="link copper" x1="260" y1="398" x2="260" y2="428"/>
+    <line class="link copper" x1="640" y1="398" x2="640" y2="428"/>
+
+    <text class="lbl" x="462" y="80">万兆光纤 10G</text>
+    <text class="lbl" x="462" y="160">双链路 10G</text>
+    <text class="lbl" x="270" y="292">万兆 10G</text>
+    <text class="lbl" x="650" y="292">万兆 10G</text>
+    <text class="lbl" x="270" y="382">千兆 1G</text>
+    <text class="lbl" x="650" y="382">千兆 1G</text>
+    <text class="lbl" x="462" y="290">服务器 10G</text>
+
+    <!-- 节点：互联网 -->
+    <g class="node">
+      <rect x="350" y="20" width="200" height="42" fill="#fff" stroke="#6b7280"/>
+      <text x="450" y="40">互联网 / 运营商</text>
+    </g>
+    <!-- 防火墙 -->
+    <g class="node">
+      <rect x="350" y="92" width="200" height="48" fill="#fee2e2" stroke="#dc2626"/>
+      <text x="450" y="112">防火墙</text>
+      <text class="sub" x="450" y="130">边界安全</text>
+    </g>
+    <!-- 核心交换机 -->
+    <g class="node">
+      <rect x="350" y="176" width="200" height="56" fill="#dbeafe" stroke="#2563eb"/>
+      <text x="450" y="198">核心交换机</text>
+      <text class="sub" x="450" y="216">机房 · 双机冗余</text>
+    </g>
+    <!-- 服务器区 -->
+    <g class="node">
+      <rect x="370" y="300" width="160" height="48" fill="#dbeafe" stroke="#2563eb"/>
+      <text x="450" y="320">服务器集群</text>
+      <text class="sub" x="450" y="338">机房 800㎡</text>
+    </g>
+    <!-- F1 汇聚 -->
+    <g class="node">
+      <rect x="180" y="258" width="160" height="42" fill="#e0f2fe" stroke="#0284c7"/>
+      <text x="260" y="278">F1 汇聚交换机</text>
+    </g>
+    <!-- F2 汇聚 -->
+    <g class="node">
+      <rect x="560" y="258" width="160" height="42" fill="#e0f2fe" stroke="#0284c7"/>
+      <text x="640" y="278">F2 汇聚交换机</text>
+    </g>
+    <!-- F1 接入 -->
+    <g class="node">
+      <rect x="180" y="348" width="160" height="50" fill="#dcfce7" stroke="#22c55e"/>
+      <text x="260" y="368">F1 接入交换机</text>
+      <text class="sub" x="260" y="386">办公室 5 · 会议室 3</text>
+    </g>
+    <!-- F2 接入 -->
+    <g class="node">
+      <rect x="560" y="348" width="160" height="50" fill="#dcfce7" stroke="#22c55e"/>
+      <text x="640" y="368">F2 接入交换机</text>
+      <text class="sub" x="640" y="386">办公室 15 · 会议室 2</text>
+    </g>
+    <!-- 终端 -->
+    <g class="node">
+      <rect x="180" y="428" width="160" height="34" fill="#fff" stroke="#9ca3af"/>
+      <text x="260" y="450">F1 终端 / AP</text>
+    </g>
+    <g class="node">
+      <rect x="560" y="428" width="160" height="34" fill="#fff" stroke="#9ca3af"/>
+      <text x="640" y="450">F2 终端 / AP</text>
+    </g>
+  </svg>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>示例教育 | 在线学习平台</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; color: #1f2937; background: #fff; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, 92%); margin: 0 auto; }
+
+    header { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #eef0f3; z-index: 10; }
+    header .container { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo { font-weight: 700; font-size: 20px; color: #2563eb; }
+    nav a { margin-left: 24px; font-size: 15px; color: #4b5563; }
+    nav a:hover { color: #2563eb; }
+    .btn { display: inline-block; padding: 10px 22px; border-radius: 6px; background: #2563eb; color: #fff; font-size: 15px; }
+    .btn:hover { background: #1d4ed8; }
+
+    .hero { background: linear-gradient(135deg, #eff6ff, #f8fafc); padding: 96px 0; }
+    .hero .container { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; }
+    .hero h1 { font-size: 44px; line-height: 1.25; margin-bottom: 16px; }
+    .hero p { font-size: 18px; color: #4b5563; margin-bottom: 32px; }
+    .hero-card { background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+    .hero-card h3 { margin-bottom: 16px; }
+    .hero-card input, .hero-card select { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; }
+    .hero-card button { width: 100%; padding: 12px; border: 0; border-radius: 6px; background: #2563eb; color: #fff; font-size: 16px; cursor: pointer; }
+
+    section { padding: 80px 0; }
+    section h2 { text-align: center; font-size: 32px; margin-bottom: 12px; }
+    .subtitle { text-align: center; color: #6b7280; margin-bottom: 48px; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .card { border: 1px solid #eef0f3; border-radius: 12px; padding: 28px; }
+    .card .icon { width: 48px; height: 48px; border-radius: 10px; background: #dbeafe; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
+    .card h3 { margin-bottom: 8px; font-size: 19px; }
+    .card p { color: #6b7280; font-size: 15px; }
+
+    .stats { background: #1e3a8a; color: #fff; padding: 56px 0; }
+    .stats .container { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; gap: 24px; }
+    .stats strong { display: block; font-size: 36px; }
+    .stats span { font-size: 14px; opacity: .8; }
+
+    .steps { counter-reset: step; }
+    .steps .card { position: relative; padding-top: 56px; }
+    .steps .card::before { counter-increment: step; content: counter(step); position: absolute; top: 20px; left: 28px; width: 28px; height: 28px; border-radius: 50%; background: #2563eb; color: #fff; text-align: center; line-height: 28px; font-weight: 700; }
+
+    .cta { background: #f8fafc; text-align: center; padding: 80px 0; }
+    .cta p { color: #4b5563; margin: 12px 0 28px; }
+
+    footer { background: #111827; color: #9ca3af; padding: 40px 0; font-size: 14px; }
+    footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+
+    @media (max-width: 800px) {
+      .hero .container, .grid, .stats .container { grid-template-columns: 1fr; }
+      nav a { display: none; }
+      .hero h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <a class="logo" href="#">示例教育</a>
+      <nav>
+        <a href="#courses">课程</a>
+        <a href="#features">特色</a>
+        <a href="#steps">学习流程</a>
+        <a href="#contact">联系我们</a>
+      </nav>
+      <a class="btn" href="#contact">免费试听</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div>
+          <h1>让每一次学习，都看得见进步</h1>
+          <p>名师授课、个性化学习路径、随时随地练习。帮助学生稳步提升，建立长期的学习习惯。</p>
+          <a class="btn" href="#contact">预约免费试听</a>
+        </div>
+        <div class="hero-card" id="contact">
+          <h3>留下信息，获取学习规划</h3>
+          <input type="text" placeholder="学生姓名">
+          <input type="tel" placeholder="家长联系电话">
+          <select>
+            <option>选择年级</option>
+            <option>小学</option>
+            <option>初中</option>
+            <option>高中</option>
+          </select>
+          <button>提交</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="container">
+        <h2>我们的特色</h2>
+        <p class="subtitle">从课前诊断到课后反馈，每个环节都有明确目标</p>
+        <div class="grid">
+          <div class="card">
+            <div class="icon">🎓</div>
+            <h3>资深教师团队</h3>
+            <p>教师均经过严格选拔，并定期参与教研培训，课堂讲解清晰、有条理。</p>
+          </div>
+          <div class="card">
+            <div class="icon">🧭</div>
+            <h3>个性化学习路径</h3>
+            <p>根据入学测评结果，为每位学生制定阶段目标与课程安排，避免重复学习。</p>
+          </div>
+          <div class="card">
+            <div class="icon">📊</div>
+            <h3>定期学习报告</h3>
+            <p>每月提供学习数据与老师点评，家长可以清楚了解孩子的优势与薄弱点。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats">
+      <div class="container">
+        <div><strong>12年</strong><span>教学经验积累</span></div>
+        <div><strong>200+</strong><span>认证授课教师</span></div>
+        <div><strong>50万+</strong><span>累计服务学员</span></div>
+        <div><strong>96%</strong><span>学员续读满意度</span></div>
+      </div>
+    </div>
+
+    <section id="courses">
+      <div class="container">
+        <h2>热门课程</h2>
+        <p class="subtitle">覆盖主要学科，支持直播与录播两种形式</p>
+        <div class="grid">
+          <div class="card"><h3>数学思维进阶班</h3><p>系统训练逻辑推理与解题方法，适合希望提升成绩的学生。</p></div>
+          <div class="card"><h3>英语口语与阅读班</h3><p>小班互动，强化听说能力，配合分级阅读材料提升语感。</p></div>
+          <div class="card"><h3>语文写作训练营</h3><p>以范文拆解和逐篇批改为主，帮助学生掌握结构与表达。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="steps" style="background:#f8fafc;">
+      <div class="container">
+        <h2>学习流程</h2>
+        <p class="subtitle">四步开始，轻松入门</p>
+        <div class="grid steps">
+          <div class="card"><h3>预约试听</h3><p>填写信息，预约一节免费体验课。</p></div>
+          <div class="card"><h3>入学测评</h3><p>通过简短测评了解当前水平与学习目标。</p></div>
+          <div class="card"><h3>定制方案</h3><p>老师为学生推荐课程组合与学习计划。</p></div>
+          <div class="card"><h3>持续跟进</h3><p>定期反馈进度，及时调整学习节奏。</p></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta">
+      <div class="container">
+        <h2>准备好开始了吗？</h2>
+        <p>第一节课免费，不满意可以随时调整。</p>
+        <a class="btn" href="#contact">立即预约</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <span>© 2025 示例教育 版权所有</span>
+      <span>联系电话：000-0000-0000 ｜ 邮箱：contact@example.com</span>
+    </div>
+  </footer>
+
+</body>
+</html>

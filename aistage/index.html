@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Lab | AI 工具聚合站</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0b0f1a;
+      --panel: #121829;
+      --line: #1f2a44;
+      --text: #e6ebf5;
+      --muted: #8b96b0;
+      --accent: #6ee7ff;
+      --accent2: #a78bfa;
+    }
+    body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1200px, 92%); margin: 0 auto; }
+
+    header { position: sticky; top: 0; z-index: 10; background: rgba(11,15,26,.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+    header .container { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+    .logo { font-weight: 800; font-size: 20px; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; color: transparent; }
+    nav a { margin-left: 22px; font-size: 14px; color: var(--muted); }
+    nav a:hover { color: var(--accent); }
+    .search { flex: 0 1 280px; padding: 9px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font-size: 14px; outline: none; }
+    .search:focus { border-color: var(--accent); }
+
+    .hero { padding: 90px 0 60px; text-align: center; background: radial-gradient(ellipse at top, #1b2650 0%, var(--bg) 60%); }
+    .hero h1 { font-size: 46px; margin-bottom: 14px; }
+    .hero h1 span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; color: transparent; }
+    .hero p { color: var(--muted); font-size: 18px; max-width: 620px; margin: 0 auto 28px; }
+    .hero .btn { display: inline-block; padding: 12px 26px; border-radius: 8px; background: linear-gradient(90deg, var(--accent), var(--accent2)); color: #0b0f1a; font-weight: 700; }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 8px 0 36px; }
+    .chip { padding: 7px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-size: 14px; cursor: pointer; }
+    .chip.active, .chip:hover { color: var(--accent); border-color: var(--accent); }
+
+    .category { margin-bottom: 56px; }
+    .category-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px; }
+    .category-head h2 { font-size: 24px; }
+    .category-head span { color: var(--muted); font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+    .tool { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; transition: transform .15s, border-color .15s; }
+    .tool:hover { transform: translateY(-3px); border-color: var(--accent); }
+    .tool .icon { font-size: 26px; margin-bottom: 10px; }
+    .tool h3 { font-size: 17px; margin-bottom: 6px; }
+    .tool p { color: var(--muted); font-size: 14px; }
+    .tag { display: inline-block; margin-top: 12px; font-size: 12px; color: var(--accent2); border: 1px solid rgba(167,139,250,.4); padding: 2px 8px; border-radius: 6px; }
+
+    .empty { text-align: center; color: var(--muted); padding: 40px 0; display: none; }
+
+    footer { border-top: 1px solid var(--line); padding: 36px 0; color: var(--muted); font-size: 14px; text-align: center; }
+
+    @media (max-width: 720px) {
+      nav { display: none; }
+      .hero h1 { font-size: 32px; }
+      header .container { gap: 10px; }
+      .search { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <a class="logo" href="#">AI Lab</a>
+      <nav>
+        <a href="#tools">工具</a>
+        <a href="#new">新品</a>
+        <a href="#about">关于</a>
+      </nav>
+      <input class="search" id="search" type="search" placeholder="搜索 AI 工具…">
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>一站式 <span>AI 工具</span> 导航</h1>
+        <p>按用途分类整理视频、声音、唱歌、P 图等十类 AI 工具，帮你快速找到合适的那一款。</p>
+        <a class="btn" href="#tools">开始探索</a>
+      </div>
+    </section>
+
+    <section id="tools" class="container">
+      <div class="filters" id="filters"></div>
+      <div id="categories"></div>
+      <p class="empty" id="empty">没有找到匹配的工具</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>AI Lab · 工具收录仅供参考，具体功能与价格请以官方页面为准。</p>
+    </div>
+  </footer>
+
+  <script>
+    const categories = [
+      { name: "视频", icon: "🎬", tools: [
+        { name: "视频生成工具 A", desc: "根据文字或图片生成短视频片段。", tag: "文生视频" },
+        { name: "视频剪辑助手", desc: "自动字幕、智能剪切与配乐。", tag: "剪辑" },
+        { name: "数字人视频", desc: "上传素材，生成口播数字人视频。", tag: "数字人" } ]},
+      { name: "声音", icon: "🎙️", tools: [
+        { name: "语音合成工具", desc: "多音色文字转语音，支持情感调节。", tag: "TTS" },
+        { name: "语音降噪", desc: "一键去除录音中的背景噪声。", tag: "降噪" },
+        { name: "音色克隆", desc: "基于短样本生成个性化音色。", tag: "音色" } ]},
+      { name: "唱歌", icon: "🎤", tools: [
+        { name: "AI 翻唱", desc: "替换歌曲音色，生成翻唱版本。", tag: "翻唱" },
+        { name: "歌曲生成", desc: "输入歌词与风格，生成完整歌曲。", tag: "作曲" },
+        { name: "人声分离", desc: "把人声与伴奏拆分成独立轨道。", tag: "分轨" } ]},
+      { name: "P 图", icon: "🖼️", tools: [
+        { name: "智能抠图", desc: "一键去除背景，支持发丝级边缘。", tag: "抠图" },
+        { name: "图片修复", desc: "修复老照片、去除划痕与噪点。", tag: "修复" },
+        { name: "AI 换背景", desc: "替换场景背景，保持光影自然。", tag: "换背景" } ]},
+      { name: "图像生成", icon: "🎨", tools: [
+        { name: "文生图工具", desc: "输入描述，生成多种风格的图片。", tag: "文生图" },
+        { name: "草图上色", desc: "将线稿快速转换为彩色插画。", tag: "上色" } ]},
+      { name: "写作", icon: "✍️", tools: [
+        { name: "写作助手", desc: "辅助撰写文章、文案与润色内容。", tag: "文案" },
+        { name: "论文润色", desc: "语法检查与学术表达优化。", tag: "润色" } ]},
+      { name: "编程", icon: "💻", tools: [
+        { name: "代码补全", desc: "在编辑器中提供实时代码建议。", tag: "IDE" },
+        { name: "代码解释器", desc: "上传代码，获取逐行讲解与改进建议。", tag: "理解" } ]},
+      { name: "办公", icon: "📊", tools: [
+        { name: "PPT 生成", desc: "输入主题，自动生成大纲与排版。", tag: "PPT" },
+        { name: "会议纪要", desc: "录音转文字并提取待办事项。", tag: "会议" } ]},
+      { name: "翻译", icon: "🌐", tools: [
+        { name: "文档翻译", desc: "保留排版的多语言文档翻译。", tag: "文档" },
+        { name: "实时口译", desc: "语音实时翻译，适合跨语言交流。", tag: "口译" } ]},
+      { name: "学习", icon: "📚", tools: [
+        { name: "知识问答", desc: "围绕资料提问，获得带出处的回答。", tag: "问答" },
+        { name: "题目讲解", desc: "拍照上传习题，给出分步解题思路。", tag: "解题" } ]}
+    ];
+
+    const filtersEl = document.getElementById("filters");
+    const categoriesEl = document.getElementById("categories");
+    const searchEl = document.getElementById("search");
+    const emptyEl = document.getElementById("empty");
+    let activeCategory = "全部";
+
+    function renderFilters() {
+      const names = ["全部", ...categories.map(c => c.name)];
+      filtersEl.innerHTML = names.map(n =>
+        `<button class="chip ${n === activeCategory ? "active" : ""}" data-name="${n}">${n}</button>`
+      ).join("");
+    }
+
+    function renderCategories() {
+      const keyword = searchEl.value.trim().toLowerCase();
+      let html = "";
+      let count = 0;
+
+      categories.forEach(cat => {
+        if (activeCategory !== "全部" && cat.name !== activeCategory) return;
+        const tools = cat.tools.filter(t =>
+          !keyword || [t.name, t.desc, t.tag, cat.name].some(s => s.toLowerCase().includes(keyword))
+        );
+        if (tools.length === 0) return;
+        count += tools.length;
+        html += `
+          <div class="category">
+            <div class="category-head">
+              <h2>${cat.icon} ${cat.name}</h2>
+              <span>${tools.length} 个工具</span>
+            </div>
+            <div class="grid">
+              ${tools.map(t => `
+                <a class="tool" href="#">
+                  <div class="icon">${cat.icon}</div>
+                  <h3>${t.name}</h3>
+                  <p>${t.desc}</p>
+                  <span class="tag">${t.tag}</span>
+                </a>`).join("")}
+            </div>
+          </div>`;
+      });
+
+      categoriesEl.innerHTML = html;
+      emptyEl.style.display = count === 0 ? "block" : "none";
+    }
+
+    filtersEl.addEventListener("click", e => {
+      const btn = e.target.closest(".chip");
+      if (!btn) return;
+      activeCategory = btn.dataset.name;
+      renderFilters();
+      renderCategories();
+    });
+
+    searchEl.addEventListener("input", renderCategories);
+
+    renderFilters();
+    renderCategories();
+  </script>
+</body>
+</html>
